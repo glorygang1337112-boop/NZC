@@ -45,16 +45,51 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&amp;display=swap" rel="stylesheet"/>
 <style>
   :root{
-    --bg1:#0b1020; --bg2:#0a0f1b; --panel:#0f172a; --line:#1e2a44;
-    --text:#e8edf8; --muted:#a3acc5; --accent:#00b7ff; --accent2:#56d2ff;
-    --accentGlow:rgba(0,183,255,.35); --whiteGlow:rgba(255,255,255,.35);
+    --bg1:#050505;
+    --bg2:#020202;
+    --panel:#090909;
+    --line:#232323;
+    --text:#f5f5f5;
+    --muted:#9a9a9a;
+    --accent:#ffffff;
+    --accent2:#d0d0d0;
+    --accentGlow:rgba(255,255,255,.35);
+    --whiteGlow:rgba(255,255,255,.55);
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
-  html,body{margin:0;padding:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--text);
-            font-family:system-ui,-apple-system,Segoe UI,Inter,Roboto,Arial}
+  html,body{
+    margin:0;
+    padding:0;
+    background:#000000;
+    color:var(--text);
+    font-family:system-ui,-apple-system,Segoe UI,Inter,Roboto,Arial
+  }
   a{color:inherit;text-decoration:none}
   .container{max-width:1200px;margin:0 auto;padding:24px}
+
+  header, main, footer{position:relative; z-index:1;}
+
+  /* COSMIC BACKGROUND */
+
+#intro-space-canvas{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  z-index:-1;
+  pointer-events:none;
+}
+
+  #space-canvas{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:0;
+    display:block;
+    pointer-events:none;
+  }
 
   /* INTRO */
   body.lock main, body.lock header, body.lock footer{pointer-events:none; filter:blur(2px); opacity:.25}
@@ -64,74 +99,318 @@
   .line{opacity:0; text-align:center; filter:blur(.2px)}
   .line span{
     display:inline-block; letter-spacing:.01em;
-    font-family:system-ui,-apple-system,Segoe UI,Inter,Roboto,Arial; /* default for NZC */
+    font-family:system-ui,-apple-system,Segoe UI,Inter,Roboto,Arial;
     font-weight:800;
   }
-  /* Playfair ONLY for the first two lines */
   .line.small  span,
   .line.smaller span{
     font-family:"Playfair Display", serif;
     font-weight:400;
   }
-  /* sizes */
   .line.small  span{font-size:min(8.8vw,52px)}
   .line.smaller span{font-size:min(8.2vw,44px)}
   .line.big    span{font-size:min(18vw,120px); line-height:.92}
 
-  /* Glow for NZC */
-  .glow span{ color:#f6f8ff; text-shadow:
+  .glow span{
+    color:#f6f8ff;
+    text-shadow:
       0 0 10px rgba(255,255,255,.70),
-      0 0 28px rgba(176,206,255,.42),
-      0 0 54px rgba(120,170,255,.26); }
+      0 0 28px rgba(200,200,200,.42),
+      0 0 54px rgba(150,150,150,.26);
+  }
 
   @keyframes fadeIn {from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:translateY(0)}}
   @keyframes fadeOut{from{opacity:1} to{opacity:0}}
   .show{animation:fadeIn .8s ease forwards}
   .hide{animation:fadeOut .8s ease forwards}
-  .skip{position:fixed;right:16px;bottom:16px;z-index:10001;padding:10px 16px;border-radius:12px;border:1px solid #fff;background:#000;color:#fff;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .35s ease, transform .35s ease, background .3s ease, box-shadow .3s ease, border-color .3s ease}
+  .skip{
+    position:fixed;
+    right:16px;
+    bottom:16px;
+    z-index:10001;
+    padding:10px 16px;
+    border-radius:12px;
+    border:1px solid #fff;
+    background:#000;
+    color:#fff;
+    cursor:pointer;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .35s ease, transform .35s ease, background .3s ease, box-shadow .3s ease, border-color .3s ease
+  }
   .skip.show{opacity:1;pointer-events:auto;transform:translateY(0)}
   .skip:hover{background:#111;border-color:#fff;box-shadow:0 0 8px rgba(255,255,255,0.5)}
 
   /* NAV */
-  header{position:sticky;top:0;z-index:20;background:rgba(8,13,25,.65);border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}
-  .nav{display:flex;align-items:center;justify-content:space-between;gap:16px; padding:14px 24px}
+  header{
+    position:sticky;
+    top:0;
+    z-index:20;
+    background:rgba(0,0,0,.7);
+    border-bottom:1px solid var(--line);
+    backdrop-filter:blur(12px)
+  }
+  .nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:14px 24px
+  }
   .brand{font-weight:900; letter-spacing:.04em}
-  .nav a.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid #1f334d;
-             background:linear-gradient(180deg,#0a1323,#0c1426);color:var(--text);cursor:pointer;
-             box-shadow:0 0 0 0 rgba(0,183,255,0); transition:box-shadow .25s ease,border-color .25s ease, color .2s ease}
-  .nav a.btn:hover{border-color:#27527a; box-shadow:0 0 18px var(--accentGlow)}
-  .nav a.btn.active{border-color:#2a6aa0; box-shadow:0 0 18px var(--accentGlow)}
-  .nav a.primary{background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#04121d; border-color:transparent; box-shadow:0 10px 28px rgba(0,183,255,.35)}
+  .nav a.btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 14px;
+    border-radius:12px;
+    border:1px solid #333;
+    background:linear-gradient(180deg,#151515,#050505);
+    color:var(--text);
+    cursor:pointer;
+    box-shadow:0 0 0 0 rgba(255,255,255,0);
+    transition:box-shadow .25s ease,border-color .25s ease, color .2s ease, background .25s ease
+  }
+  .nav a.btn:hover{
+    border-color:#666;
+    background:linear-gradient(180deg,#1c1c1c,#050505);
+    box-shadow:0 0 18px var(--accentGlow)
+  }
+  .nav a.btn.active{
+    border-color:#999;
+    box-shadow:0 0 18px var(--accentGlow)
+  }
+  .nav a.primary{
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    color:#050505;
+    border-color:transparent;
+    box-shadow:0 10px 28px rgba(255,255,255,.25)
+  }
 
   /* HERO */
-  .hero{display:grid;grid-template-columns:1.15fr 0.85fr;gap:28px;align-items:center;min-height:60vh}
-  .hero-left{justify-self:end; text-align:left; max-width:680px; transform:translateX(-4%)}
-  .headline{font-size:clamp(26px,4.4vw,48px); font-weight:800; line-height:1.15; margin:0 0 10px; text-shadow:0 0 22px var(--whiteGlow)}
-  .subline{font-size:clamp(12px,2.1vw,16px); color:#a8b2cc; letter-spacing:.02em}
-  .hero-right{justify-self:start; max-width:640px}
-  .panel{background:linear-gradient(180deg,#0d1324,#0c1220); border:1px solid var(--line); border-radius:16px; padding:22px; box-shadow:0 14px 50px rgba(0,0,0,.45)}
+  .hero{
+    display:grid;
+    grid-template-columns:1.15fr 0.85fr;
+    gap:28px;
+    align-items:center;
+    min-height:60vh
+  }
+  .hero-left{
+    justify-self:end;
+    text-align:left;
+    max-width:680px;
+    transform:translateX(-4%)
+  }
+  .headline{
+    font-size:clamp(26px,4.4vw,48px);
+    font-weight:800;
+    line-height:1.15;
+    margin:0 0 10px;
+    text-shadow:0 0 22px var(--whiteGlow)
+  }
+  .subline{
+    font-size:clamp(12px,2.1vw,16px);
+    color:var(--muted);
+    letter-spacing:.02em
+  }
+  .hero-right{
+    justify-self:start;
+    max-width:640px
+  }
+  .panel{
+    position:relative;
+    background:rgba(10,10,10,.32);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:16px;
+    padding:22px;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,.02),
+      0 14px 32px rgba(0,0,0,.85);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    overflow:hidden;
+  }
   .panel h2{margin:0 0 12px; font-size:clamp(20px,3.6vw,28px)}
-  .panel p{color:#c9d3ea; line-height:1.7; margin:10px 0}
+  .panel p{color:#d0d0d0; line-height:1.7; margin:10px 0}
 
   /* Sections */
-  section.block{padding-block:56px; border-top:1px solid #1b2842}
+  section.block{
+    padding-block:56px;
+    border-top:none
+  }
   .cards{display:grid;grid-template-columns:1fr;gap:18px}
   @media (min-width:820px){ .cards{grid-template-columns:1fr 1fr} }
-  .card{background:linear-gradient(180deg,#0c1221,#0a0f1b); border:1px solid #1e2a44; border-radius:16px; padding:20px 20px; box-shadow:0 10px 40px rgba(0,0,0,.35)}
+  .card{
+    position:relative;
+    background:rgba(10,10,10,.32);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:16px;
+    padding:20px 20px;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,.02),
+      0 12px 30px rgba(0,0,0,.8);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    overflow:hidden;
+  }
   .card h3{margin:0 0 8px}
-  .price{margin-top:10px; color:#9fdfff; font-weight:700}
+  .price{margin-top:10px; color:#e0e0e0; font-weight:700}
+
+  .panel::after,
+  .card::after{
+    content:""; 
+    position:absolute;
+    inset:-1px;
+    border-radius:inherit;
+    border:1px solid rgba(255,255,255,.10);
+    pointer-events:none;
+    mix-blend-mode:screen;
+    opacity:.0;
+    animation:cardGlow 6s ease-in-out infinite;
+  }
 
   .join{display:flex;justify-content:center;padding:40px 0}
-  .cta{display:inline-flex;align-items:center;gap:10px;padding:14px 18px;border-radius:14px;border:1px solid #1f334d;
-       background:linear-gradient(135deg,var(--accent),var(--accent2));color:#06131e;font-weight:800; letter-spacing:.02em;
-       box-shadow:0 12px 30px rgba(0,183,255,.35)}
+  .cta{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:14px 18px;
+    border-radius:14px;
+    border:1px solid #444;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    color:#050505;
+    font-weight:800;
+    letter-spacing:.02em;
+    box-shadow:0 12px 30px rgba(255,255,255,.3)
+  }
 
   .reveal{opacity:0; transform:translateY(10px); animation:up .6s ease .2s forwards}
   @keyframes up{to{opacity:1; transform:translateY(0)}}
 
-/* Games cards fine-tuning */
-#halloween .card { display:flex; flex-direction:column; gap:8px }
-#halloween .card .cta { margin-top:8px; align-self:flex-start }
+  /* Games cards fine-tuning */
+  #halloween .card { display:flex; flex-direction:column; gap:8px }
+  #halloween .card .cta { margin-top:8px; align-self:flex-start }
+
+  /* PROJECTS ROADMAP */
+  #projects h2{margin-bottom:10px}
+  #projects p.section-intro{
+    margin:0 0 18px;
+    color:var(--muted);
+    max-width:720px;
+  }
+  .projects-road{
+    position:relative;
+    margin-top:10px;
+    padding-left:40px;
+  }
+  .projects-road::before{
+    content:none;
+  }
+  .project-card{
+    position:relative;
+    max-width:520px;
+    margin-bottom:60px;
+    padding:18px 18px 16px;
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,.08);
+    background:rgba(10,10,10,.3);
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,.015),
+      0 14px 32px rgba(0,0,0,.9);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    overflow:hidden;
+  }
+  .project-card h3{
+    margin:0 0 4px;
+    font-size:18px;
+  }
+  .project-tag{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:4px 10px;
+    border-radius:999px;
+    border:1px solid #3a3a3a;
+    font-size:11px;
+    color:var(--muted);
+    margin-bottom:10px;
+  }
+  .project-body{
+    font-size:14px;
+    color:#d5d5d5;
+    line-height:1.6;
+    margin-bottom:10px;
+  }
+  .project-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+  }
+  .btn-project{
+    padding:8px 14px;
+    border-radius:999px;
+    border:1px solid #ffffff;
+    background:transparent;
+    color:#ffffff;
+    font-size:13px;
+    cursor:pointer;
+    text-decoration:none;
+    transition:background .25s ease, color .25s ease, box-shadow .25s ease, transform .15s ease;
+  }
+  .btn-project:hover{
+    background:#ffffff;
+    color:#000000;
+    box-shadow:0 0 18px rgba(255,255,255,.4);
+    transform:translateY(-1px);
+  }
+  .project-note{
+    font-size:12px;
+    color:var(--muted);
+  }
+
+  /* offset layout */
+  .project-card:nth-child(1){transform:translateX(0);}
+  .project-card:nth-child(2){transform:translateX(8%);}
+  .project-card:nth-child(3){transform:translateX(-6%);}
+  .project-card:nth-child(4){transform:translateX(4%);}
+
+  @media (max-width:720px){
+    .project-card:nth-child(n){transform:none;}
+  }
+
+  /* small glow node on the vertical line */
+  .project-card::before{
+    content:"";
+    position:absolute;
+    left:-30px;
+    top:20px;
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:#ffffff;
+    box-shadow:0 0 10px rgba(255,255,255,.9);
+  }
+  .project-card::after{
+    content:"";
+    position:absolute;
+    inset:-1px;
+    border-radius:inherit;
+    border:1px solid rgba(255,255,255,.18);
+    pointer-events:none;
+    mix-blend-mode:screen;
+    opacity:.0;
+    animation:cardGlow 4.5s ease-in-out infinite;
+  }
+  @media (max-width:720px){
+    .project-card::before{left:-26px;}
+  }
+  @keyframes cardGlow{
+    0%{opacity:.0;}
+    40%{opacity:.12;}
+    100%{opacity:.0;}
+  }
 </style>
 <!-- Favicons – Zinken Forge -->
 <link href="https://zinkenforge.ru/favicon.ico?v=6" rel="icon" sizes="any"/>
@@ -139,16 +418,20 @@
 <link href="https://zinkenforge.ru/favicon-192.png?v=6" rel="icon" sizes="192x192" type="image/png"/>
 <link href="https://zinkenforge.ru/apple-touch-icon.png?v=6" rel="apple-touch-icon"/>
 <link href="https://zinkenforge.ru/site.webmanifest" rel="manifest"/>
-<meta content="#0b1020" name="theme-color"/>
+<meta content="#000000" name="theme-color"/>
 </head>
 <body class="lock">
 <!-- INTRO -->
 <div aria-label="Последовательное приветствие" class="splash" id="splash">
+  <canvas id="intro-space-canvas"></canvas>
   <div class="stage">
     <div class="line small" id="line"><span></span></div>
   </div>
 </div>
 <button aria-label="Пропустить интро" class="skip" id="skip">Пропустить</button>
+
+<!-- COSMIC BACKGROUND -->
+<canvas id="space-canvas"></canvas>
 
 <!-- NAV -->
 <header>
@@ -157,10 +440,8 @@
     <nav id="topnav" style="display:flex;gap:12px;align-items:center">
       <a class="btn" href="#about">О нас</a>
       <a class="btn" href="#learn">Обучение</a>
-      <!-- изменено: ссылка на отдельную папку услуг -->
-      <a class="btn" href="/services/">Услуги</a>
+      <a class="btn" href="#projects">Проекты</a>
       <a class="btn primary" href="#join">Вступить</a>
-      <a class="btn" href="#halloween">Halloween</a>
     </nav>
   </div>
 </header>
@@ -190,7 +471,7 @@
     </aside>
   </section>
 
-  <!-- ОБУЧЕНИЕ (обновлено) -->
+  <!-- ОБУЧЕНИЕ -->
   <section class="block" id="learn">
     <h2>Обучение</h2>
     <div class="panel">
@@ -215,31 +496,82 @@
     </div>
   </section>
 
-  <!-- (СЕКЦИЯ УСЛУГ УДАЛЕНА С ГЛАВНОЙ) -->
+  <!-- НАШИ ПРОЕКТЫ -->
+  <section class="block" id="projects">
+    <h2>Наши проекты</h2>
+    <p class="section-intro">
+      Zinken Forge — это не только сообщество, но и экосистема проектов: от базового комьюнити до сервисов и экспериментов,
+      которые помогают развиваться в рынке и вокруг него.
+    </p>
+    <div class="projects-road">
+      <article class="project-card">
+        <div class="project-tag">Комьюнити · база экосистемы</div>
+        <h3>Zinken Forge</h3>
+        <p class="project-body">
+          Основное сообщество, где формируется мышление, дисциплина и отношение к рынку без иллюзий.
+          Разборы, наблюдения, рабочие идеи и опора на долгосрок вместо «быстрых иксов».
+        </p>
+        <div class="project-actions">
+          <a class="btn-project" href="https://t.me/ZinkenForge" target="_blank" rel="noopener noreferrer">
+            Подписаться
+          </a>
+          <span class="project-note">Telegram‑сообщество NZC</span>
+        </div>
+      </article>
+
+      <article class="project-card">
+        <div class="project-tag">NFT · доступы · коллекции</div>
+        <h3>Zinken NFT</h3>
+        <p class="project-body">
+          Направление, связанное с NFT: коллекции, утилитарные токены, роли и доступы к закрытым форматам.
+          Всё, что касается цифровой идентики и зашифрованной ценности поверх обычного контента.
+        </p>
+        <div class="project-actions">
+          <a class="btn-project" href="https://t.me/ZinkenNFT" target="_blank" rel="noopener noreferrer">
+            Подписаться
+          </a>
+          <span class="project-note">Новости и эксперименты в NFT‑плоскости</span>
+        </div>
+      </article>
+
+      <article class="project-card">
+        <div class="project-tag">Сервис · Stars без лишних барьеров</div>
+        <h3>ZinkenStars</h3>
+        <p class="project-body">
+          Сервис для покупки Telegram Stars дешевле, чем внутри Telegram, без KYC и ненужных проверок.
+          Удобный способ пополнить баланс для ботов, мини‑приложений и донатов без лишней бюрократии.
+        </p>
+        <div class="project-actions">
+          <a class="btn-project" href="https://t.me/ZinkenStars_bot" target="_blank" rel="noopener noreferrer">
+            Приобрести
+          </a>
+          <span class="project-note">Бот для покупки Stars</span>
+        </div>
+      </article>
+
+      <article class="project-card">
+        <div class="project-tag">Новое · эксперименты · тесты</div>
+        <h3>Новое?</h3>
+        <p class="project-body">
+          Площадка для свежих запусков, пилотов и идей, которые ещё в стадии обкатки.
+          Здесь появляются тестовые форматы, новые продукты и инструменты, которые можно
+          пробовать одними из первых.
+        </p>
+        <div class="project-actions">
+          <a class="btn-project" href="https://t.me/ZinIdentity" target="_blank" rel="noopener noreferrer">
+            Узнавать
+          </a>
+          <span class="project-note">Следить за новинками и апдейтами</span>
+        </div>
+      </article>
+    </div>
+  </section>
 
   <!-- СВЯЗЬ -->
   <section class="block" id="contact">
     <h2>Связь</h2>
     <div class="panel">
       <p>Связаться с нами можно через Telegram — оставив комментарий под публикацией или написав в личные сообщения сообщества.</p>
-    </div>
-  </section>
-
-  <!-- HALLOWEEN -->
-  <section class="block" id="halloween">
-    <h2>Halloween</h2>
-    <div class="panel"><p>Две тематические игры к Хеллоуину: выбирай механику и прокачивай мышление.</p></div>
-    <div class="cards">
-      <article class="card">
-        <h3>🎯 Pumpkin Square</h3>
-        <p>Мини-игра о торговле: кликай, покупай и продавай. Динамические котировки и спотовые сделки.</p>
-        <div><a class="cta" href="/pumpkin-square">Играть →</a></div>
-      </article>
-      <article class="card">
-        <h3>🔥 Pumpkin Forge</h3>
-        <p>Стратегическая ферма: развивай поле, управляй ресурсами и принимай решения с расчётом. Каждый шаг приближает к мастерству управления и предпринимательскому мышлению.</p>
-        <div><a class="cta" href="/pumpkin-forge">Играть →</a></div>
-      </article>
     </div>
   </section>
 
@@ -268,7 +600,7 @@
     const phrases = [
       { text: "Добро пожаловать", cls: "small" },
       { text: "в комьюнити",     cls: "smaller" },
-      { text: "NZC",             cls: "big glow" } // NZC with glow & system font
+      { text: "NZC",             cls: "big glow" }
     ];
     const tIn = 800, tHold = 900, tOut = 800, tGap = 500;
 
@@ -339,40 +671,339 @@
     if (el) io.observe(el);
   });
 
-/* Smooth scroll with easing & header offset */
-(function(){
-  const header = document.querySelector('header');
-  // Select ALL in-page anchors across the document (includes footer "К началу ↑")
-  const links = Array.from(document.querySelectorAll('a[href^="#"]'));
+  /* Smooth scroll with easing & header offset */
+  (function(){
+    const header = document.querySelector('header');
+    const linksAll = Array.from(document.querySelectorAll('a[href^="#"]'));
 
-  function easeInOutQuad(t){ return t<0.5 ? 2*t*t : -1+(4-2*t)*t; }
+    function easeInOutQuad(t){ return t<0.5 ? 2*t*t : -1+(4-2*t)*t; }
 
-  function smoothScrollTo(targetY, duration){
-    const startY = window.pageYOffset;
-    const startTime = performance.now();
-    function step(now){
-      const t = Math.min(1, (now - startTime) / duration);
-      const eased = easeInOutQuad(t);
-      window.scrollTo(0, startY + (targetY - startY) * eased);
-      if (t < 1) requestAnimationFrame(step);
+    function smoothScrollTo(targetY, duration){
+      const startY = window.pageYOffset;
+      const startTime = performance.now();
+      function step(now){
+        const t = Math.min(1, (now - startTime) / duration);
+        const eased = easeInOutQuad(t);
+        window.scrollTo(0, startY + (targetY - startY) * eased);
+        if (t < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
     }
-    requestAnimationFrame(step);
-  }
 
-  links.forEach(a => {
-    a.addEventListener('click', (e) => {
-      const href = a.getAttribute('href');
-      const id = href && href.startsWith('#') ? href.slice(1) : null;
-      const el = id ? document.getElementById(id) : null;
-      if (!el) return;
-      e.preventDefault();
-      const headerH = header ? header.offsetHeight : 0;
-      const rect = el.getBoundingClientRect();
-      const targetY = rect.top + window.pageYOffset - Math.max(10, headerH + 8);
-      smoothScrollTo(targetY, 700); // 700ms feels silky
+    linksAll.forEach(a => {
+      a.addEventListener('click', (e) => {
+        const href = a.getAttribute('href');
+        const id = href && href.startsWith('#') ? href.slice(1) : null;
+        const el = id ? document.getElementById(id) : null;
+        if (!el) return;
+        e.preventDefault();
+        const headerH = header ? header.offsetHeight : 0;
+        const rect = el.getBoundingClientRect();
+        const targetY = rect.top + window.pageYOffset - Math.max(10, headerH + 8);
+        smoothScrollTo(targetY, 700);
+      });
     });
-  });
-})();
+  })();
+</script>
+
+<!-- COSMIC BACKGROUND SCRIPT -->
+<script>
+  (function () {
+    const canvas = document.getElementById('space-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+
+    const STAR_COUNT = 220;
+    const stars = [];
+    const comets = [];
+    const COMET_INTERVAL = 30000;
+    let cometTimer = 0;
+
+    function resize() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+    }
+    window.addEventListener('resize', resize);
+
+    function createStars() {
+      stars.length = 0;
+      for (let i = 0; i < STAR_COUNT; i++) {
+        stars.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: Math.random() * 1.3 + 0.4,
+          baseAlpha: Math.random() * 0.4 + 0.3,
+          twinkleSpeed: Math.random() * 0.0015 + 0.0005,
+          phase: Math.random() * Math.PI * 2
+        });
+      }
+    }
+
+    function spawnComet() {
+      const side = Math.floor(Math.random() * 4);
+      let x, y, vx, vy;
+      const speed = (Math.min(width, height) / 1000) * (200 + Math.random() * 120);
+      const angleSpread = 0.4;
+
+      if (side === 0) {
+        x = -50;
+        y = Math.random() * height;
+        const angle = (Math.PI / 4) + (Math.random() - 0.5) * angleSpread;
+        vx = Math.cos(angle) * speed;
+        vy = Math.sin(angle) * speed;
+      } else if (side === 1) {
+        x = width + 50;
+        y = Math.random() * height;
+        const angle = (Math.PI * 3 / 4) + (Math.random() - 0.5) * angleSpread;
+        vx = Math.cos(angle) * speed;
+        vy = Math.sin(angle) * speed;
+      } else if (side === 2) {
+        x = Math.random() * width;
+        y = -50;
+        const angle = (Math.PI / 2) + (Math.random() - 0.5) * angleSpread;
+        vx = Math.cos(angle) * speed;
+        vy = Math.sin(angle) * speed;
+      } else {
+        x = Math.random() * width;
+        y = height + 50;
+        const angle = (Math.PI * 3 / 2) + (Math.random() - 0.5) * angleSpread;
+        vx = Math.cos(angle) * speed;
+        vy = Math.sin(angle) * speed;
+      }
+
+      comets.push({
+        x,
+        y,
+        vx,
+        vy,
+        life: 0,
+        maxLife: 4500 + Math.random() * 1500,
+        trail: []
+      });
+    }
+
+    createStars();
+    let lastTime = performance.now();
+
+    function loop(now) {
+      const dt = now - lastTime;
+      lastTime = now;
+
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, width, height);
+
+      for (const star of stars) {
+        const t = now * star.twinkleSpeed + star.phase;
+        const alpha = star.baseAlpha * (0.6 + 0.4 * (0.5 + 0.5 * Math.sin(t)));
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+        ctx.fill();
+      }
+
+      for (let i = comets.length - 1; i >= 0; i--) {
+        const c = comets[i];
+        c.life += dt;
+        const dtSec = dt / 1000;
+        c.x += c.vx * dtSec;
+        c.y += c.vy * dtSec;
+
+        c.trail.push({ x: c.x, y: c.y });
+        if (c.trail.length > 40) c.trail.shift();
+        const lifeRatio = 1 - (c.life / c.maxLife);
+        if (lifeRatio <= 0) {
+          comets.splice(i, 1);
+          continue;
+        }
+
+        ctx.save();
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+        for (let j = 1; j < c.trail.length; j++) {
+          const p1 = c.trail[j - 1];
+          const p2 = c.trail[j];
+          const t = j / c.trail.length;
+          ctx.strokeStyle = `rgba(255,255,255,${lifeRatio * (t * 0.9)})`;
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.stroke();
+        }
+
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${lifeRatio})`;
+        ctx.fill();
+        ctx.restore();
+      }
+
+      cometTimer += dt;
+      if (cometTimer > COMET_INTERVAL) {
+        cometTimer = 0;
+        spawnComet();
+      }
+
+      requestAnimationFrame(loop);
+    }
+
+    requestAnimationFrame(loop);
+  })();
+</script>
+<script>
+(function () {
+    const canvas = document.getElementById('intro-space-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+
+    const STAR_COUNT = 220;
+    const stars = [];
+    const comets = [];
+    const COMET_INTERVAL = 30000;
+    let cometTimer = 0;
+
+    function resize() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+    }
+    window.addEventListener('resize', resize);
+
+    function createStars() {
+      stars.length = 0;
+      for (let i = 0; i < STAR_COUNT; i++) {
+        stars.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: Math.random() * 1.3 + 0.4,
+          baseAlpha: Math.random() * 0.4 + 0.3,
+          twinkleSpeed: Math.random() * 0.0015 + 0.0005,
+          phase: Math.random() * Math.PI * 2
+        });
+      }
+    }
+
+    function spawnComet() {
+      const side = Math.floor(Math.random() * 4);
+      let x, y, vx, vy;
+      const speed = (Math.min(width, height) / 1000) * (200 + Math.random() * 120);
+      const angleSpread = 0.4;
+
+      if (side === 0) {
+        x = -50;
+        y = Math.random() * height;
+        const angle = (Math.PI / 4) + (Math.random() - 0.5) * angleSpread;
+        vx = Math.cos(angle) * speed;
+        vy = Math.sin(angle) * speed;
+      } else if (side === 1) {
+        x = width + 50;
+        y = Math.random() * height;
+        const angle = (Math.PI * 3 / 4) + (Math.random() - 0.5) * angleSpread;
+        vx = Math.cos(angle) * speed;
+        vy = Math.sin(angle) * speed;
+      } else if (side === 2) {
+        x = Math.random() * width;
+        y = -50;
+        const angle = (Math.PI / 2) + (Math.random() - 0.5) * angleSpread;
+        vx = Math.cos(angle) * speed;
+        vy = Math.sin(angle) * speed;
+      } else {
+        x = Math.random() * width;
+        y = height + 50;
+        const angle = (Math.PI * 3 / 2) + (Math.random() - 0.5) * angleSpread;
+        vx = Math.cos(angle) * speed;
+        vy = Math.sin(angle) * speed;
+      }
+
+      comets.push({
+        x,
+        y,
+        vx,
+        vy,
+        life: 0,
+        maxLife: 4500 + Math.random() * 1500,
+        trail: []
+      });
+    }
+
+    createStars();
+    let lastTime = performance.now();
+
+    function loop(now) {
+      const dt = now - lastTime;
+      lastTime = now;
+
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, width, height);
+
+      for (const star of stars) {
+        const t = now * star.twinkleSpeed + star.phase;
+        const alpha = star.baseAlpha * (0.6 + 0.4 * (0.5 + 0.5 * Math.sin(t)));
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+        ctx.fill();
+      }
+
+      for (let i = comets.length - 1; i >= 0; i--) {
+        const c = comets[i];
+        c.life += dt;
+        const dtSec = dt / 1000;
+        c.x += c.vx * dtSec;
+        c.y += c.vy * dtSec;
+
+        c.trail.push({ x: c.x, y: c.y });
+        if (c.trail.length > 40) c.trail.shift();
+        const lifeRatio = 1 - (c.life / c.maxLife);
+        if (lifeRatio <= 0) {
+          comets.splice(i, 1);
+          continue;
+        }
+
+        ctx.save();
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+        for (let j = 1; j < c.trail.length; j++) {
+          const p1 = c.trail[j - 1];
+          const p2 = c.trail[j];
+          const t = j / c.trail.length;
+          ctx.strokeStyle = `rgba(255,255,255,${lifeRatio * (t * 0.9)})`;
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.stroke();
+        }
+
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${lifeRatio})`;
+        ctx.fill();
+        ctx.restore();
+      }
+
+      cometTimer += dt;
+      if (cometTimer > COMET_INTERVAL) {
+        cometTimer = 0;
+        spawnComet();
+      }
+
+      requestAnimationFrame(loop);
+    }
+
+    requestAnimationFrame(loop);
+  })();
 </script>
 </body>
 </html>
